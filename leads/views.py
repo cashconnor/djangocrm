@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from .models import Lead, Agent
 from .forms import LeadModelForm, LeadForm
 
+
+def landing_page(request):
+    return render(request, "landing.html")
+
 def lead_list(request):
     leads = Lead.objects.all()
     context = {
@@ -43,6 +47,11 @@ def lead_update(request, pk):
             "form": form
         }
     return render(request, "leads/lead_update.html", context)
+
+def lead_delete(request, pk):
+    lead = Lead.objects.get(id=pk)
+    lead.delete()
+    return redirect("/leads")
 
 # def lead_update(request, pk):
 #     lead = Lead.objects.get(id=pk)

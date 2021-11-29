@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .lead{
-            padding-top:10px;
-            padding-bottom:10px;
-            padding-left:6px;
-            padding-right:6px;
-            margin-top:10px;
-            background-color: rgb(237, 237, 237);
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-    <a href="/leads">Back to Leads</a>
+{% extends "base.html" %}
+
+{% block content %}
+    <a href="{% url 'leads:lead-list' %}">Back to Leads</a>
     <hr/>
     <h1>Create a new lead</h1>
     <form method="post" action=".">
@@ -26,5 +9,4 @@
         {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
-</body>
-</html>
+{% endblock content %}
