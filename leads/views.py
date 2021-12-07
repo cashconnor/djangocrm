@@ -1,10 +1,12 @@
+from django.db.models import query
+from django.forms.forms import Form
 from django.shortcuts import render, redirect, reverse
 from django.core.mail import send_mail
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
-from .models import Lead, Agent
+from .models import Lead, Agent, Category
 from .forms import LeadModelForm, LeadForm, CustomUserCreationForm, AssignAgentForm
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from agents.mixins import OrganizerAndLoginRequiredMixin
@@ -173,4 +175,34 @@ class AssignAgentView(OrganizerAndLoginRequiredMixin, FormView):
         lead.agent = agent
         lead.save()
         return super(AssignAgentView, self).form_valid(form)
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    template_name = "leads/category_list.html"
+    context_object_name = "category_list"
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organization=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organization=user.agent.organization)
+
+        context.update({
+            "unassigned_lead_count": queryset.filter(category__isnull=True).count()
+        })
+
+        return context
+
+
+    def get_queryset(self):
+        user = self.request.user
+
+        #filter for organization
+        if user.is_organizer:
+            queryset = Category.objects.filter(organization=user.userprofile)
+        else:
+            queryset = Category.objects.filter(organization=user.agent.organization)
+        return queryset
 
