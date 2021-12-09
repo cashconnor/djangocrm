@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormView
 from .models import Lead, Agent, Category
-from .forms import LeadModelForm, LeadForm, CustomUserCreationForm, AssignAgentForm
+from .forms import LeadModelForm, LeadForm, CustomUserCreationForm, AssignAgentForm, LeadCategoryUpdateForm
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from agents.mixins import OrganizerAndLoginRequiredMixin
 
@@ -206,3 +206,46 @@ class CategoryListView(LoginRequiredMixin, ListView):
             queryset = Category.objects.filter(organization=user.agent.organization)
         return queryset
 
+class CategoryDetailView(LoginRequiredMixin, DetailView):
+    template_name ="leads/category_detail.html"
+    context_object_name = "category"
+
+    
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(CategoryDetailView, self).get_context_data(**kwargs)
+        
+    #     leads = self.get_object().leads.all()
+        
+
+    #     context.update({
+    #         "leads": leads
+    #     })
+
+        # return context
+
+    def get_queryset(self):
+        user = self.request.user
+
+        #filter for organization
+        if user.is_organizer:
+            queryset = Category.objects.filter(organization=user.userprofile)
+        else:
+            queryset = Category.objects.filter(organization=user.agent.organization)
+        return queryset
+
+class LeadCategoryUpdateView(LoginRequiredMixin, UpdateView):
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_organizer:
+            queryset = Lead.objects.filter(organization=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organization=user.agent.organization)
+            queryset = queryset.filter(agent__user=user)
+        return queryset
+        
+    template_name = "leads/lead_category_update.html"
+    form_class = LeadCategoryUpdateForm
+
+    def get_success_url(self):
+        return reverse("leads:lead-detail", kwargs={"pk": self.get_object().id})
