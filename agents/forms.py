@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 User = get_user_model()
 
+
 class AgentModelForm(forms.ModelForm):
     class Meta:
         model = User
@@ -11,5 +12,5 @@ class AgentModelForm(forms.ModelForm):
             'email',
             'username',
             'first_name',
-            'last_name',
+            'last_name'
         )
