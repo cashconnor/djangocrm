@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
-from django.conf.global_settings import LOGIN_URL
+from django.conf.global_settings import LOGIN_URL, LOGOUT_REDIRECT_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    #Third parth apps
+    'crispy_forms',
+    'crispy_tailwind',
+
+    #Local apps
     'leads',
     'agents',
 ]
@@ -136,3 +142,7 @@ AUTH_USER_MODEL = 'leads.User'
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 LOGIN_REDIRECT_URL = "/leads"
 LOGIN_URL = "/login"
+LOGOUT_REDIRECT_URL ="/"
+
+CRISPY_TEMPLATE_PACK = 'tailwind'
+CRISPY_TEMPLATE_PACK = "tailwind"
