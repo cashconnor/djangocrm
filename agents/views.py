@@ -49,12 +49,13 @@ class AgentDetailView(OrganizerAndLoginRequiredMixin, generic.DetailView):
 class AgentUpdateView(OrganizerAndLoginRequiredMixin, generic.UpdateView):
     template_name = "agents/agent_update.html"
     form_class = AgentModelForm
+
+    def get_success_url(self):
+        return reverse("agents:agent-list")
+
     def get_queryset(self):
         organization = self.request.user.userprofile
         return Agent.objects.filter(organization=organization)
-    
-    def get_success_url(self):
-        return reverse("agents:agent-list")
 
 class AgentDeleteView(OrganizerAndLoginRequiredMixin, generic.DeleteView):
     def get_queryset(self):
