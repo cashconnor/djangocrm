@@ -10,7 +10,7 @@ from .models import Lead, Agent, Category
 from .forms import LeadModelForm, LeadForm, CustomUserCreationForm, AssignAgentForm, LeadCategoryUpdateForm
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from agents.mixins import OrganizerAndLoginRequiredMixin
-
+from django.contrib import messages
 class SignupView(CreateView):
     template_name = "registration/signup.html"
     form_class = CustomUserCreationForm
@@ -102,6 +102,7 @@ class LeadCreateView(OrganizerAndLoginRequiredMixin, CreateView):
             from_email = "test@test.com",
             recipient_list= ["test2@test.com"]
         )
+        messages.success(self.request, "You have successfully created a lead")
         return super(LeadCreateView, self).form_valid(form)
 
 def lead_create(request):

@@ -12,6 +12,11 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class LeadManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+
 class Lead(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -19,6 +24,9 @@ class Lead(models.Model):
     organization = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     agent = models.ForeignKey("Agent",null=True, blank=True, on_delete=models.SET_NULL)
     category = models.ForeignKey("Category", related_name="leads", null=True, blank=True, on_delete=models.SET_NULL)
+    image = models.ImageField(null=True, blank=True, upload_to="pictures/")
+
+    objects = LeadManager()
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
